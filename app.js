@@ -7,6 +7,20 @@
   TABS.forEach(function(t){ panes[t] = document.getElementById('pane-'+t); });
   var buttons = Array.prototype.slice.call(document.querySelectorAll('.segbtn'));
   var current = null;
+  var iframes = {};
+  var depth = {wear:0, eat:0, watch:0};
+  window.addEventListener('message', function(ev){
+    TABS.forEach(function(t){
+      var f = iframes[t];
+      if (f && ev.source === f.contentWindow) {
+        var d = ev.data || {};
+        if (d.t === 'ak-nav') depth[t] = d.depth | 0;
+      }
+    });
+  });
+  function armShield(){
+    try { history.pushState({tab:current, shield:true}, '', '#'+current); } catch(e){}
+  }
 
   function loadPane(pane){
     if (pane.dataset.loaded) return;
@@ -35,6 +49,7 @@
       clearTimeout(timer);
       veil.hidden = true;
     });
+    iframes[pane.id.replace('pane-','')] = f;
     f.src = pane.dataset.url;
     pane.appendChild(f);
   }
@@ -52,17 +67,20 @@
       b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     loadPane(panes[tab]);
-    if (push !== false) {
-      try { history.pushState({tab:tab}, '', '#'+tab); } catch(e){}
-    }
+    try { history.replaceState({tab:tab}, '', '#'+tab); } catch(e){}
   }
 
   buttons.forEach(function(b){
     b.addEventListener('click', function(){ select(b.dataset.tab); });
   });
   window.addEventListener('popstate', function(ev){
-    var tab = (ev.state && ev.state.tab) || location.hash.replace('#','') || 'wear';
-    select(tab, false);
+    var d = depth[current] || 0;
+    var f = iframes[current];
+    if (d > 0 && f) {
+      f.contentWindow.postMessage({t:'ak-back'}, '*');
+      armShield(); // re-arm so the next back also lands here
+    }
+    // depth 0: at the tab's root - no re-arm, so the next back exits the app
   });
 
   var start = location.hash.replace('#','');
@@ -71,6 +89,7 @@
   }
   select(start, false);
   try { history.replaceState({tab:current}, '', '#'+current); } catch(e){}
+  armShield();
   window.addEventListener('pagehide', function(){
     try { localStorage.setItem('wsi-last-tab', current); } catch(e){}
   });
