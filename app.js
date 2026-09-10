@@ -1,7 +1,7 @@
 /* What Should I - tab shell */
 (function(){
   var TABS = ['wear','eat','watch'];
-  var ALLOW = 'camera; microphone; geolocation; clipboard-write';
+  var ALLOW = 'camera; microphone; geolocation; clipboard-write; notifications';
   var stage = document.getElementById('stage');
   var panes = {};
   TABS.forEach(function(t){ panes[t] = document.getElementById('pane-'+t); });
