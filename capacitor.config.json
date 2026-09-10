@@ -1,0 +1,8 @@
+{
+  "appId": "app.whatshouldi",
+  "appName": "What Should I",
+  "webDir": "www",
+  "backgroundColor": "#eef0f4",
+  "android": { "allowMixedContent": false },
+  "server": { "androidScheme": "https" }
+}
