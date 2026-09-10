@@ -1,5 +1,5 @@
 /* What Should I shell - caches shell assets only; embedded apps manage their own data. */
-var CACHE = 'wsi-shell-v5';
+var CACHE = 'wsi-shell-v6';
 var ASSETS = ['./', 'index.html', 'styles.css', 'app.js','data.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'];
 
