@@ -36,6 +36,8 @@ jobs:
         run: |
           sed -i 's/compileSdkVersion = [0-9]*/compileSdkVersion = 35/; s/targetSdkVersion = [0-9]*/targetSdkVersion = 35/' android/variables.gradle
           rm -f android/app/src/main/res/mipmap-anydpi-v26/*.png
+      - name: Install custom launcher icons
+        run: cp -r apk-icons/res/. android/app/src/main/res/
       - name: Inject release signing
         run: python3 scripts/inject_signing.py
       - name: Build release APK
